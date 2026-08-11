@@ -250,54 +250,21 @@ p{margin:0;}
   position:absolute;
   filter:drop-shadow(0 8px 14px rgba(0,0,0,.3));
 }
-/* top banner cluster */
-.lantern-cluster{
+/* single lantern-rain image, laid directly over the hero photo.
+   Sized for a phone screen (source image is a 9:16 mobile crop) —
+   capped so it doesn't blur out on wider screens, not tuned for laptops. */
+.lantern-rain{
   top:0; left:0; right:0;
   margin:0 auto;
-  width:min(92vw, 880px);
-  opacity:.92;
-  animation:floatA 9s ease-in-out infinite;
-}
-/* scattered singles, below the cluster, hugging the left/right edges */
-.lantern-left-a{
-  top:58%; left:-9%;
-  width:min(24vw, 180px);
-  opacity:.85;
-  animation:floatB 10s ease-in-out infinite;
-}
-.lantern-left-b{
-  top:88%; left:-3%;
-  width:min(15vw, 100px);
-  opacity:.7;
-  animation:floatC 8s ease-in-out infinite;
-  animation-delay:.6s;
-}
-.lantern-right-a{
-  top:62%; right:-9%;
-  width:min(24vw, 180px);
-  opacity:.85;
-  animation:floatC 9s ease-in-out infinite;
-  animation-delay:.3s;
-}
-.lantern-right-b{
-  top:90%; right:-3%;
-  width:min(15vw, 100px);
-  opacity:.7;
-  animation:floatB 8.5s ease-in-out infinite;
-  animation-delay:1s;
+  width:100%;
+  max-width:480px;
+  opacity:.9;
+  animation:floatRain 12s ease-in-out infinite;
 }
 
-@keyframes floatA{
-  0%,100%{transform:translate(0,0) rotate(-2deg);}
-  50%{transform:translate(6px,-16px) rotate(2deg);}
-}
-@keyframes floatB{
-  0%,100%{transform:translate(0,0) rotate(2deg);}
-  50%{transform:translate(-8px,-20px) rotate(-3deg);}
-}
-@keyframes floatC{
-  0%,100%{transform:translate(0,0) rotate(0deg);}
-  50%{transform:translate(5px,-12px) rotate(3deg);}
+@keyframes floatRain{
+  0%,100%{transform:translate(0,0);}
+  50%{transform:translate(0,-14px);}
 }
 
 .hero-content{
@@ -669,15 +636,6 @@ p{margin:0;}
   .event-media{aspect-ratio:16/9;}
   .event-info{padding:1.1rem;}
   .dress-grid,.location-grid{grid-template-columns:1fr;}
-
-  /* tuned separately from desktop: narrow screens need less bleed and
-     tighter vertical spacing or the side lanterns end up overlapping
-     the hero text / running off both edges */
-  .lantern-cluster{ width:98vw; }
-  .lantern-left-a{ top:24%; left:-10%; width:36vw; }
-  .lantern-left-b{ top:42%; left:-4%;  width:24vw; }
-  .lantern-right-a{ top:28%; right:-10%; width:34vw; }
-  .lantern-right-b{ top:46%; right:-4%;  width:22vw; }
 }
 
 @media (min-width:641px) and (max-width:900px){
