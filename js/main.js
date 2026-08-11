@@ -16,22 +16,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let doorOpened = false;
 
-  // browsers block unmuted autoplay, so the closed-door video starts muted —
-  // unmute it as soon as the visitor makes their first gesture (first tap of the double-tap).
-  // Different browsers only treat certain event types as a valid "user gesture" for audio
-  // (iOS Safari in particular can ignore pointerdown), so listen on several and let the
-  // first one that fires do the work; the guard makes the rest no-ops.
-  let closedUnmuted = false;
-  function unmuteClosedDoor(){
-    if (closedUnmuted || doorOpened) return;
-    closedUnmuted = true;
-    closedVideo.muted = false;
-    closedVideo.volume = 1;
-    const p = closedVideo.play();
-    if (p) p.catch(() => {});
+  // Both door videos stay muted throughout (they keep their `muted` attribute
+  // from the markup — nothing here unmutes them). Playing their own audio
+  // would cut out abruptly the moment the video ends, which made the
+  // door->hero handoff sound obviously stitched together even after the
+  // visual transition became seamless. Instead the background music starts
+  // on the visitor's first gesture and plays continuously through the whole
+  // door + hero experience, so there's one unbroken audio track and no seam.
+  // Several event types are listened for since not all of them count as a
+  // valid "user gesture" for audio on every browser (iOS Safari in
+  // particular can ignore pointerdown) — the guard makes the rest no-ops.
+  let bgMusicStarted = false;
+  function startBgMusic(){
+    if (bgMusicStarted || !bgMusic) return;
+    bgMusicStarted = true;
+    bgMusic.volume = 0.55;
+    bgMusic.play().then(() => setMusicIcon(true)).catch(() => setMusicIcon(false));
   }
   ['pointerdown','touchstart','mousedown','click'].forEach(evt => {
-    doorScreen.addEventListener(evt, unmuteClosedDoor, { once:true, passive:true });
+    doorScreen.addEventListener(evt, startBgMusic, { once:true, passive:true });
   });
 
   function openDoor(){
@@ -40,22 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     doorScreen.classList.add('knocked');
 
-    // swap videos
+    // swap videos (both stay muted — see startBgMusic above)
     closedVideo.classList.remove('active');
     openVideo.classList.add('active');
     openVideo.currentTime = 0;
-
-    // unmute here, inside the user gesture, so a knock/creak sound (if present) can play
-    openVideo.muted = false;
-    let playPromise = openVideo.play();
-    if (playPromise) {
-      playPromise.catch(() => {
-        // some browsers block unmuted autoplay even inside a gesture — retry muted
-        openVideo.muted = true;
-        const retry = openVideo.play();
-        if (retry) retry.catch(() => finishReveal());
-      });
-    }
+    const playPromise = openVideo.play();
+    if (playPromise) playPromise.catch(() => {});
 
     // safety fallback in case 'ended' never fires (video missing, etc.)
     const fallbackTimer = setTimeout(finishReveal, 6000);
@@ -81,15 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
     mainSite.classList.add('revealed');
     document.body.style.overflow = 'auto';
 
-    // try to start background music (user gesture already happened via the tap)
-    if (bgMusic) {
-      bgMusic.volume = 0.55;
-      bgMusic.play().then(() => {
-        setMusicIcon(true);
-      }).catch(() => {
-        setMusicIcon(false);
-      });
-    }
+    // fallback in case the gesture-triggered start above never fired
+    startBgMusic();
   }
 
   // lock scroll until door opens
