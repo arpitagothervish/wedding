@@ -121,45 +121,45 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------------------------------------------------------
-     3. LANTERN FIELD — fixed to the viewport (not the hero), so it
+     3. FLOWER FIELD — fixed to the viewport (not the hero), so it
         isn't clipped when the hero scrolls away. Drifts at a fraction
         of normal scroll speed so it lags behind and lingers on screen
         after the hero background is gone, then fades out once the
         visitor has scrolled well past it.
   --------------------------------------------------------- */
-  const lanternField = document.getElementById('lantern-field');
+  const flowerField = document.getElementById('flower-field');
 
-  if (lanternField){
-    const LANTERN_SPEED = 0.28;  // fraction of normal scroll speed — lower = lags further behind
+  if (flowerField){
+    const FLOWER_SPEED  = 0.28;  // fraction of normal scroll speed — lower = lags further behind
     const FADE_START_VH = 1.15;  // starts fading after this many viewport-heights of scroll
     const FADE_END_VH   = 2.1;   // fully faded by this many viewport-heights
 
-    let lanternTicking = false;
+    let flowerTicking = false;
 
-    function updateLanternField(){
+    function updateFlowerField(){
       const y  = window.scrollY;
       const vh = window.innerHeight;
 
-      lanternField.style.transform = `translate3d(0, ${-y * LANTERN_SPEED}px, 0)`;
+      flowerField.style.transform = `translate3d(0, ${-y * FLOWER_SPEED}px, 0)`;
 
       const fadeRange = (FADE_END_VH - FADE_START_VH) * vh;
       const progress  = (y - FADE_START_VH * vh) / fadeRange;
       const opacity   = 1 - Math.min(Math.max(progress, 0), 1);
 
-      lanternField.style.opacity    = opacity;
-      lanternField.style.visibility = opacity <= 0.01 ? 'hidden' : 'visible';
+      flowerField.style.opacity    = opacity;
+      flowerField.style.visibility = opacity <= 0.01 ? 'hidden' : 'visible';
 
-      lanternTicking = false;
+      flowerTicking = false;
     }
 
     window.addEventListener('scroll', () => {
-      if (!lanternTicking){
-        requestAnimationFrame(updateLanternField);
-        lanternTicking = true;
+      if (!flowerTicking){
+        requestAnimationFrame(updateFlowerField);
+        flowerTicking = true;
       }
     }, { passive:true });
 
-    updateLanternField();
+    updateFlowerField();
   }
 
   /* ---------------------------------------------------------

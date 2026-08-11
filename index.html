@@ -70,12 +70,12 @@
     <a href="#location" class="dot" data-label="Location"></a>
   </nav>
 
-  <!-- Lanterns: fixed to the viewport (not clipped to the hero) so they can
-       drift at a much slower rate than the page and stay on screen well
-       after the hero background has scrolled away. Faded out by JS once
-       the visitor has scrolled well past the hero. -->
-  <div id="lantern-field" aria-hidden="true">
-    <img src="assets/images/lantern.png" alt="" class="lantern lantern-rain" onerror="this.style.display='none'">
+  <!-- Cherry blossoms: fixed to the viewport (not clipped to the hero) so
+       they can drift at a much slower rate than the page and stay on
+       screen well after the hero background has scrolled away. Faded out
+       by JS once the visitor has scrolled well past the hero. -->
+  <div id="flower-field" aria-hidden="true">
+    <img src="assets/images/flowers.png" alt="" class="flower flower-rain" onerror="this.style.display='none'">
   </div>
 
   <!-- ===================== HERO ===================== -->
@@ -106,6 +106,14 @@
       <p class="section-eyebrow">Mark Your Calendar</p>
       <h2>Scratch to Reveal Our Date</h2>
     </div>
+
+    <!-- heart clip path shared by the card frame, reveal layer, and canvas
+         so the whole scratch card reads as one big heart instead of a circle -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+        <path d="M0.5,1 L0.4275,0.9282 C0.17,0.6734 0,0.5057 0,0.2997 C0,0.1318 0.1211,0 0.275,0 C0.362,0 0.4455,0.0442 0.5,0.1139 C0.5545,0.0442 0.638,0 0.725,0 C0.879,0 1,0.1318 1,0.2997 C1,0.5057 0.83,0.6734 0.5725,0.9282 L0.5,1 Z"/>
+      </clipPath>
+    </svg>
 
     <div class="scratch-card-wrap">
       <div class="scratch-card" id="scratchCard">

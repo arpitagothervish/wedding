@@ -248,21 +248,21 @@ p{margin:0;}
 /* fixed to the viewport (not the hero) so it isn't clipped by
    .parallax-wrap's overflow:hidden — this is what lets it lag behind
    and stay on screen after the hero has scrolled away */
-#lantern-field{
+#flower-field{
   position:fixed;
   inset:0;
   z-index:50;
   pointer-events:none;
   will-change:transform, opacity;
 }
-.lantern{
+.flower{
   position:absolute;
   filter:drop-shadow(0 8px 14px rgba(0,0,0,.3));
 }
-/* single lantern-rain image, laid directly over the hero photo.
-   Sized for a phone screen (source image is a 9:16 mobile crop) —
+/* single cherry-blossom image, laid directly over the hero photo.
+   Sized for a phone screen (source image is a mobile crop) —
    capped so it doesn't blur out on wider screens, not tuned for laptops. */
-.lantern-rain{
+.flower-rain{
   top:0; left:0; right:0;
   margin:0 auto;
   width:100%;
@@ -358,17 +358,21 @@ p{margin:0;}
 }
 .scratch-card{
   position:relative;
-  width:min(320px, 82vw);
-  height:min(320px, 82vw);
-  border-radius:50%;
-  box-shadow:0 18px 40px rgba(28,95,83,.22);
-  border:6px solid var(--cream);
-  outline:1px solid var(--gold-light);
+  width:min(380px, 92vw);
+  height:min(380px, 92vw);
+  filter:drop-shadow(0 18px 32px rgba(28,95,83,.28));
+}
+.scratch-card::before{
+  content:'';
+  position:absolute;
+  inset:-7px;
+  background:var(--cream);
+  clip-path:url(#heartClip);
 }
 .scratch-reveal{
   position:absolute;
   inset:0;
-  border-radius:50%;
+  clip-path:url(#heartClip);
   background:linear-gradient(160deg, var(--blush) 0%, var(--rose) 100%);
   display:flex;
   flex-direction:column;
@@ -394,7 +398,7 @@ p{margin:0;}
   inset:0;
   width:100%;
   height:100%;
-  border-radius:50%;
+  clip-path:url(#heartClip);
   cursor:grab;
   touch-action:none;
   transition:opacity .7s ease;
