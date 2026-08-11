@@ -16,11 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let doorOpened = false;
 
-  // Background music starts on the visitor's first gesture and plays
-  // continuously through the whole door + hero experience. Several event
-  // types are listened for since not all of them count as a valid "user
-  // gesture" for audio on every browser (iOS Safari in particular can
-  // ignore pointerdown) — the guard makes the rest no-ops.
+  // Background music starts once the door-open video finishes (see
+  // finishReveal below) — not earlier — so it kicks in right as the hero
+  // appears instead of playing underneath the door animation.
   let bgMusicStarted = false;
   function startBgMusic(){
     if (bgMusicStarted || !bgMusic) return;
@@ -29,8 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
     bgMusic.play().then(() => setMusicIcon(true)).catch(() => setMusicIcon(false));
   }
 
-  // Closed-door video starts muted (autoplay policy) — unmute on the same
-  // first gesture as the background music.
+  // Closed-door video starts muted (autoplay policy) — unmute on the
+  // visitor's first gesture. Several event types are listened for since
+  // not all of them count as a valid "user gesture" for audio on every
+  // browser (iOS Safari in particular can ignore pointerdown) — the guard
+  // makes the rest no-ops.
   let closedUnmuted = false;
   function unmuteClosedDoor(){
     if (closedUnmuted || doorOpened) return;
@@ -42,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   ['pointerdown','touchstart','mousedown','click'].forEach(evt => {
-    doorScreen.addEventListener(evt, startBgMusic, { once:true, passive:true });
     doorScreen.addEventListener(evt, unmuteClosedDoor, { once:true, passive:true });
   });
 
@@ -199,24 +199,36 @@ document.addEventListener('DOMContentLoaded', () => {
       drawScratchLayer();
     }
 
+    function heartPath(w, h){
+      // normalized heart (0..1 in both axes), same shape as the
+      // #heartClip path behind it in the HTML — scaled to canvas pixels
+      ctx.beginPath();
+      ctx.moveTo(0.5*w, 1*h);
+      ctx.lineTo(0.4275*w, 0.9282*h);
+      ctx.bezierCurveTo(0.17*w,0.6734*h, 0*w,0.5057*h, 0*w,0.2997*h);
+      ctx.bezierCurveTo(0*w,0.1318*h, 0.1211*w,0*h, 0.275*w,0*h);
+      ctx.bezierCurveTo(0.362*w,0*h, 0.4455*w,0.0442*h, 0.5*w,0.1139*h);
+      ctx.bezierCurveTo(0.5545*w,0.0442*h, 0.638*w,0*h, 0.725*w,0*h);
+      ctx.bezierCurveTo(0.879*w,0*h, 1*w,0.1318*h, 1*w,0.2997*h);
+      ctx.bezierCurveTo(1*w,0.5057*h, 0.83*w,0.6734*h, 0.5725*w,0.9282*h);
+      ctx.lineTo(0.5*w, 1*h);
+      ctx.closePath();
+    }
+
     function drawScratchLayer(){
       const w = canvas.width, h = canvas.height;
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'source-over';
 
-      // canvas is sized to the same aspect ratio as the PNG (via CSS
-      // aspect-ratio on .scratch-card), so drawing it at 0,0,w,h is a
-      // uniform scale, not a stretch. No solid base underneath — the
-      // heart's own shape/transparency is the only thing scratchable,
-      // and the reveal date shows straight through wherever it's clear.
-      const img = new Image();
-      img.onload = () => { ctx.drawImage(img, 0, 0, w, h); };
-      img.onerror = () => {
-        // fallback so there's still something to scratch if the image fails to load
-        ctx.fillStyle = '#eaa57c';
-        ctx.fillRect(0, 0, w, h);
-      };
-      img.src = 'assets/images/scratch-overlay.png';
+      // solid pink heart drawn straight on the canvas — no image. Deeper/
+      // more saturated than the reveal layer's own pink underneath, so
+      // scratching it away is visible instead of pink-on-pink with no contrast.
+      heartPath(w, h);
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#ec7ba0');
+      grad.addColorStop(1, '#d94f7c');
+      ctx.fillStyle = grad;
+      ctx.fill();
     }
 
     function getPos(e){
