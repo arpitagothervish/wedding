@@ -16,16 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let doorOpened = false;
 
-  // Both door videos stay muted throughout (they keep their `muted` attribute
-  // from the markup — nothing here unmutes them). Playing their own audio
-  // would cut out abruptly the moment the video ends, which made the
-  // door->hero handoff sound obviously stitched together even after the
-  // visual transition became seamless. Instead the background music starts
-  // on the visitor's first gesture and plays continuously through the whole
-  // door + hero experience, so there's one unbroken audio track and no seam.
-  // Several event types are listened for since not all of them count as a
-  // valid "user gesture" for audio on every browser (iOS Safari in
-  // particular can ignore pointerdown) — the guard makes the rest no-ops.
+  // Background music starts on the visitor's first gesture and plays
+  // continuously through the whole door + hero experience. Several event
+  // types are listened for since not all of them count as a valid "user
+  // gesture" for audio on every browser (iOS Safari in particular can
+  // ignore pointerdown) — the guard makes the rest no-ops.
   let bgMusicStarted = false;
   function startBgMusic(){
     if (bgMusicStarted || !bgMusic) return;
@@ -33,8 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
     bgMusic.volume = 0.55;
     bgMusic.play().then(() => setMusicIcon(true)).catch(() => setMusicIcon(false));
   }
+
+  // Closed-door video starts muted (autoplay policy) — unmute on the same
+  // first gesture as the background music.
+  let closedUnmuted = false;
+  function unmuteClosedDoor(){
+    if (closedUnmuted || doorOpened) return;
+    closedUnmuted = true;
+    closedVideo.muted = false;
+    closedVideo.volume = 1;
+    const p = closedVideo.play();
+    if (p) p.catch(() => {});
+  }
+
   ['pointerdown','touchstart','mousedown','click'].forEach(evt => {
     doorScreen.addEventListener(evt, startBgMusic, { once:true, passive:true });
+    doorScreen.addEventListener(evt, unmuteClosedDoor, { once:true, passive:true });
   });
 
   function openDoor(){
@@ -43,12 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     doorScreen.classList.add('knocked');
 
-    // swap videos (both stay muted — see startBgMusic above)
+    // swap videos
     closedVideo.classList.remove('active');
     openVideo.classList.add('active');
     openVideo.currentTime = 0;
+
+    // unmute here, inside the user gesture, so the open-door audio can play
+    openVideo.muted = false;
     const playPromise = openVideo.play();
-    if (playPromise) playPromise.catch(() => {});
+    if (playPromise) {
+      playPromise.catch(() => {
+        // some browsers block unmuted autoplay even inside a gesture — retry muted
+        openVideo.muted = true;
+        const retry = openVideo.play();
+        if (retry) retry.catch(() => {});
+      });
+    }
 
     // safety fallback in case 'ended' never fires (video missing, etc.)
     const fallbackTimer = setTimeout(finishReveal, 6000);
@@ -182,38 +201,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawScratchLayer(){
       const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'source-over';
 
-      // opaque gold base first so nothing peeks through before the heart
-      // texture (which has a transparent background) loads on top of it
-      paintGoldFallback();
-
+      // canvas is sized to the same aspect ratio as the PNG (via CSS
+      // aspect-ratio on .scratch-card), so drawing it at 0,0,w,h is a
+      // uniform scale, not a stretch. No solid base underneath — the
+      // heart's own shape/transparency is the only thing scratchable,
+      // and the reveal date shows straight through wherever it's clear.
       const img = new Image();
-      img.onload = () => {
-        // contain-fit, centered — the source PNG isn't square, so drawing
-        // it stretched to the canvas's exact w/h would squash the heart
-        const scale = Math.min(w / img.width, h / img.height);
-        const dw = img.width * scale;
-        const dh = img.height * scale;
-        ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+      img.onload = () => { ctx.drawImage(img, 0, 0, w, h); };
+      img.onerror = () => {
+        // fallback so there's still something to scratch if the image fails to load
+        ctx.fillStyle = '#eaa57c';
+        ctx.fillRect(0, 0, w, h);
       };
       img.src = 'assets/images/scratch-overlay.png';
-    }
-
-    function paintGoldFallback(){
-      const w = canvas.width, h = canvas.height;
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, '#e9cf94');
-      grad.addColorStop(0.5, '#c9a35a');
-      grad.addColorStop(1, '#a8823f');
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.font = '600 13px Poppins, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('✦ scratch me ✦', w/2, h/2);
     }
 
     function getPos(e){
