@@ -17,15 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let doorOpened = false;
 
   // browsers block unmuted autoplay, so the closed-door video starts muted —
-  // unmute it as soon as the visitor makes their first gesture (first tap of the double-tap)
+  // unmute it as soon as the visitor makes their first gesture (first tap of the double-tap).
+  // Different browsers only treat certain event types as a valid "user gesture" for audio
+  // (iOS Safari in particular can ignore pointerdown), so listen on several and let the
+  // first one that fires do the work; the guard makes the rest no-ops.
   let closedUnmuted = false;
   function unmuteClosedDoor(){
     if (closedUnmuted || doorOpened) return;
     closedUnmuted = true;
     closedVideo.muted = false;
-    closedVideo.play().catch(() => {});
+    closedVideo.volume = 1;
+    const p = closedVideo.play();
+    if (p) p.catch(() => {});
   }
-  doorScreen.addEventListener('pointerdown', unmuteClosedDoor, { once:true });
+  ['pointerdown','touchstart','mousedown','click'].forEach(evt => {
+    doorScreen.addEventListener(evt, unmuteClosedDoor, { once:true, passive:true });
+  });
 
   function openDoor(){
     if (doorOpened) return;
