@@ -73,7 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function finishReveal(){
+    // instant cut, no fade — door-open.mp4's last frame is designed to
+    // match couple-hero.jpg, so hiding the door immediately makes it look
+    // like the door opened straight into the site rather than crossfading
     doorScreen.classList.add('door-exit');
+    doorScreen.style.display = 'none';
     mainSite.classList.add('revealed');
     document.body.style.overflow = 'auto';
 
@@ -86,8 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setMusicIcon(false);
       });
     }
-
-    setTimeout(() => { doorScreen.style.display = 'none'; }, 1200);
   }
 
   // lock scroll until door opens
