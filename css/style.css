@@ -15,6 +15,8 @@
   --plum:#123a33;
   --maroon:#1c5f53;
   --ink:#4a3527;
+  --blush-pink-light:#f8dde3;
+  --blush-pink:#dd93a8;
 
   --font-heading:'Playfair Display', serif;
   --font-script:'Great Vibes', cursive;
@@ -367,7 +369,7 @@ p{margin:0;}
 .scratch-reveal{
   position:absolute;
   inset:0;
-  background:linear-gradient(160deg, var(--blush) 0%, var(--rose) 100%);
+  background:linear-gradient(160deg, var(--blush-pink-light) 0%, var(--blush-pink) 100%);
   display:flex;
   flex-direction:column;
   align-items:center;
