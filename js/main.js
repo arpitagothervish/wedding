@@ -16,6 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let doorOpened = false;
 
+  // browsers block unmuted autoplay, so the closed-door video starts muted —
+  // unmute it as soon as the visitor makes their first gesture (first tap of the double-tap)
+  let closedUnmuted = false;
+  function unmuteClosedDoor(){
+    if (closedUnmuted || doorOpened) return;
+    closedUnmuted = true;
+    closedVideo.muted = false;
+    closedVideo.play().catch(() => {});
+  }
+  doorScreen.addEventListener('pointerdown', unmuteClosedDoor, { once:true });
+
   function openDoor(){
     if (doorOpened) return;
     doorOpened = true;
