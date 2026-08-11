@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 220">
+  <defs>
+    <radialGradient id="glow1" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#ffe9b0" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#ffe9b0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8cd94"/>
+      <stop offset="100%" stop-color="#a8823f"/>
+    </linearGradient>
+    <linearGradient id="teal1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2f7d6f"/>
+      <stop offset="100%" stop-color="#123a33"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="50" cy="110" r="55" fill="url(#glow1)"/>
+
+  <line x1="50" y1="0" x2="50" y2="30" stroke="#c9a35a" stroke-width="2"/>
+  <ellipse cx="50" cy="32" rx="10" ry="4" fill="url(#gold1)"/>
+  <path d="M32,32 Q50,5 68,32 Z" fill="url(#gold1)"/>
+  <rect x="42" y="32" width="16" height="10" fill="url(#gold1)"/>
+
+  <path d="M20,42 L80,42 L88,120 Q50,145 12,120 Z" fill="url(#teal1)" stroke="#c9a35a" stroke-width="2"/>
+
+  <line x1="20" y1="42" x2="12" y2="120" stroke="#e8cd94" stroke-width="1.2" opacity="0.7"/>
+  <line x1="35" y1="42" x2="28" y2="128" stroke="#e8cd94" stroke-width="1" opacity="0.45"/>
+  <line x1="50" y1="42" x2="50" y2="133" stroke="#e8cd94" stroke-width="1" opacity="0.45"/>
+  <line x1="65" y1="42" x2="72" y2="128" stroke="#e8cd94" stroke-width="1" opacity="0.45"/>
+  <line x1="80" y1="42" x2="88" y2="120" stroke="#e8cd94" stroke-width="1.2" opacity="0.7"/>
+  <line x1="14" y1="65" x2="86" y2="65" stroke="#e8cd94" stroke-width="1" opacity="0.4"/>
+  <line x1="12" y1="95" x2="88" y2="95" stroke="#e8cd94" stroke-width="1" opacity="0.4"/>
+
+  <rect x="30" y="70" width="8" height="14" rx="1.5" fill="#ffe9b0" opacity="0.55"/>
+  <rect x="61" y="70" width="8" height="14" rx="1.5" fill="#ffe9b0" opacity="0.55"/>
+  <rect x="45" y="95" width="9" height="16" rx="1.5" fill="#ffe9b0" opacity="0.5"/>
+
+  <path d="M12,120 Q50,145 88,120 L82,132 Q50,152 18,132 Z" fill="url(#gold1)"/>
+  <circle cx="50" cy="140" r="4" fill="url(#gold1)"/>
+
+  <line x1="44" y1="144" x2="40" y2="170" stroke="#c15b3c" stroke-width="1.5"/>
+  <line x1="50" y1="144" x2="50" y2="175" stroke="#c15b3c" stroke-width="1.5"/>
+  <line x1="56" y1="144" x2="60" y2="170" stroke="#c15b3c" stroke-width="1.5"/>
+  <circle cx="40" cy="172" r="2.4" fill="#c15b3c"/>
+  <circle cx="50" cy="177" r="2.4" fill="#c15b3c"/>
+  <circle cx="60" cy="172" r="2.4" fill="#c15b3c"/>
+</svg>
