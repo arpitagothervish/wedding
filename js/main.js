@@ -149,9 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const flowerField = document.getElementById('flower-field');
 
   if (flowerField){
-    const FLOWER_SPEED  = 0.28;  // fraction of normal scroll speed — lower = lags further behind
-    const FADE_START_VH = 1.15;  // starts fading after this many viewport-heights of scroll
-    const FADE_END_VH   = 2.1;   // fully faded by this many viewport-heights
+    const FLOWER_SPEED  = 0.16;  // fraction of normal scroll speed — lower = lags further behind
+    const FADE_START_VH = 2.2;   // starts fading after this many viewport-heights of scroll — past the scratch section
+    const FADE_END_VH   = 3.0;   // fully faded by this many viewport-heights
 
     let flowerTicking = false;
 
