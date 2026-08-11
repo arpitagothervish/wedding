@@ -236,36 +236,38 @@ p{margin:0;}
   inset:0;
   background:linear-gradient(180deg, rgba(18,58,51,.05) 0%, rgba(18,58,51,.15) 55%, rgba(14,30,27,.75) 100%);
 }
-.lantern-layer{
-  position:absolute;
+/* fixed to the viewport (not the hero) so it isn't clipped by
+   .parallax-wrap's overflow:hidden — this is what lets it lag behind
+   and stay on screen after the hero has scrolled away */
+#lantern-field{
+  position:fixed;
   inset:0;
+  z-index:50;
   pointer-events:none;
-  will-change:transform;
+  will-change:transform, opacity;
 }
 .lantern{
   position:absolute;
   filter:drop-shadow(0 8px 14px rgba(0,0,0,.3));
 }
-.lantern-top{
-  top:0; left:0;
-  width:100%;
-  max-height:40vh;
-  object-fit:cover;
-  object-position:top center;
-  opacity:.9;
+.lantern-cluster{
+  top:-3%; left:0; right:0;
+  margin:0 auto;
+  width:min(78vw, 460px);
+  opacity:.92;
   animation:floatA 9s ease-in-out infinite;
 }
-.lantern-side{
-  top:4%; right:-6%;
-  width:min(48vw, 340px);
+.lantern-left{
+  top:10%; left:-9%;
+  width:min(44vw, 280px);
   opacity:.85;
   animation:floatB 10s ease-in-out infinite;
 }
-.lantern-corner{
-  bottom:6%; left:-4%;
-  width:min(52vw, 320px);
-  opacity:.8;
-  animation:floatC 8.5s ease-in-out infinite;
+.lantern-right{
+  top:14%; right:-9%;
+  width:min(44vw, 280px);
+  opacity:.85;
+  animation:floatC 9s ease-in-out infinite;
 }
 
 @keyframes floatA{

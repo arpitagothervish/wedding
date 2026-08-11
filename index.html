@@ -70,6 +70,16 @@
     <a href="#location" class="dot" data-label="Location"></a>
   </nav>
 
+  <!-- Lanterns: fixed to the viewport (not clipped to the hero) so they can
+       drift at a much slower rate than the page and stay on screen well
+       after the hero background has scrolled away. Faded out by JS once
+       the visitor has scrolled well past the hero. -->
+  <div id="lantern-field" aria-hidden="true">
+    <img src="assets/images/lantern-1.png" alt="" class="lantern lantern-cluster" onerror="this.style.display='none'">
+    <img src="assets/images/lantern-2.png" alt="" class="lantern lantern-left" onerror="this.style.display='none'">
+    <img src="assets/images/lantern-3.png" alt="" class="lantern lantern-right" onerror="this.style.display='none'">
+  </div>
+
   <!-- ===================== HERO ===================== -->
   <section id="hero" class="section hero-section">
     <div class="parallax-wrap">
@@ -77,17 +87,6 @@
       <!-- Background layer: couple photo. Drop your photo at assets/images/couple-hero.jpg -->
       <div class="hero-bg"></div>
       <div class="hero-scrim"></div>
-
-      <!-- Lantern parallax layers -->
-      <div class="lantern-layer" data-speed="0.10">
-        <img src="assets/images/lantern-3.png" alt="" class="lantern lantern-top" onerror="this.style.display='none'">
-      </div>
-      <div class="lantern-layer" data-speed="0.20">
-        <img src="assets/images/lantern-1.png" alt="" class="lantern lantern-side" onerror="this.style.display='none'">
-      </div>
-      <div class="lantern-layer" data-speed="0.16">
-        <img src="assets/images/lantern-2.png" alt="" class="lantern lantern-corner" onerror="this.style.display='none'">
-      </div>
 
       <div class="hero-content">
         <p class="hero-eyebrow">Together with their families</p>
