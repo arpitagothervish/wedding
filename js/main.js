@@ -184,14 +184,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const w = canvas.width, h = canvas.height;
       ctx.globalCompositeOperation = 'source-over';
 
-      // try a custom texture first, fall back to a gold gradient
-      const img = new Image();
-      img.onload = () => { ctx.drawImage(img, 0, 0, w, h); };
-      img.onerror = () => { paintGoldFallback(); };
-      img.src = 'assets/images/scratch-overlay.jpg';
-
-      // paint fallback immediately too, texture (if it loads) will draw over it
+      // opaque gold base first so nothing peeks through before the heart
+      // texture (which has a transparent background) loads on top of it
       paintGoldFallback();
+
+      const img = new Image();
+      img.onload = () => {
+        // contain-fit, centered — the source PNG isn't square, so drawing
+        // it stretched to the canvas's exact w/h would squash the heart
+        const scale = Math.min(w / img.width, h / img.height);
+        const dw = img.width * scale;
+        const dh = img.height * scale;
+        ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+      };
+      img.src = 'assets/images/scratch-overlay.png';
     }
 
     function paintGoldFallback(){
