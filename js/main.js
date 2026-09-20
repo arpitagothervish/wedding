@@ -16,35 +16,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let doorOpened = false;
 
-  // Background music starts once the door-open video finishes (see
-  // finishReveal below) — not earlier — so it kicks in right as the hero
-  // appears instead of playing underneath the door animation.
+  // Background music replaces the door videos' own audio entirely — both
+  // door-closed.mp4 and door-open.mp4 stay muted (see the `muted` attribute
+  // on each <video> in the HTML, and openDoor() below never unmutes them).
+  //
+  // The track should start as close to "the moment the page loads" as
+  // browsers allow. Autoplay-with-sound is blocked without a user gesture,
+  // so we: (1) try to play immediately on load — works in some browsers/
+  // contexts, and (2) if that's blocked, start it on the visitor's very
+  // first tap/click/key anywhere on the page — which fires on the *first*
+  // tap of the door, not the second tap that actually opens it.
   let bgMusicStarted = false;
   function startBgMusic(){
     if (bgMusicStarted || !bgMusic) return;
-    bgMusicStarted = true;
-    bgMusic.volume = 0.55;
-    bgMusic.play().then(() => setMusicIcon(true)).catch(() => setMusicIcon(false));
+    const p = bgMusic.play();
+    if (p) {
+      p.then(() => { bgMusicStarted = true; setMusicIcon(true); })
+       .catch(() => { /* still blocked — first-interaction listener below will retry */ });
+    }
   }
 
-  // Closed-door video starts muted (autoplay policy) — unmute on the
-  // visitor's first gesture. Several event types are listened for since
-  // not all of them count as a valid "user gesture" for audio on every
-  // browser (iOS Safari in particular can ignore pointerdown) — the guard
-  // makes the rest no-ops.
-  let closedUnmuted = false;
-  function unmuteClosedDoor(){
-    if (closedUnmuted || doorOpened) return;
-    closedUnmuted = true;
-    closedVideo.muted = false;
-    closedVideo.volume = 1;
-    const p = closedVideo.play();
-    if (p) p.catch(() => {});
-  }
+  if (bgMusic) bgMusic.volume = 0.55;
+  startBgMusic();
 
-  ['pointerdown','touchstart','mousedown','click'].forEach(evt => {
-    doorScreen.addEventListener(evt, unmuteClosedDoor, { once:true, passive:true });
-  });
+  const firstInteractionEvents = ['pointerdown','touchstart','mousedown','click','keydown'];
+  function armMusicUnlock(){
+    const handler = () => {
+      startBgMusic();
+      firstInteractionEvents.forEach(evt => document.removeEventListener(evt, handler));
+    };
+    firstInteractionEvents.forEach(evt => document.addEventListener(evt, handler, { passive:true }));
+  }
+  armMusicUnlock();
 
   function openDoor(){
     if (doorOpened) return;
@@ -57,17 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
     openVideo.classList.add('active');
     openVideo.currentTime = 0;
 
-    // unmute here, inside the user gesture, so the open-door audio can play
-    openVideo.muted = false;
+    // stays muted — background music (started earlier) carries the audio now
     const playPromise = openVideo.play();
-    if (playPromise) {
-      playPromise.catch(() => {
-        // some browsers block unmuted autoplay even inside a gesture — retry muted
-        openVideo.muted = true;
-        const retry = openVideo.play();
-        if (retry) retry.catch(() => {});
-      });
-    }
+    if (playPromise) playPromise.catch(() => {});
 
     // safety fallback in case 'ended' never fires (video missing, etc.)
     const fallbackTimer = setTimeout(finishReveal, 6000);
@@ -182,6 +177,109 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------------------------------------------------------
+     3.5 CONFETTI BURST — fires once the scratch card is fully
+     revealed. Self-contained canvas particle burst (no external
+     library/CDN dependency), using the site's own palette so it
+     reads as celebratory rather than generic rainbow confetti.
+  --------------------------------------------------------- */
+  function launchConfetti(originEl){
+    const colors = ['#c9a35a', '#e8cd94', '#d99cae', '#f7dde3', '#a85d70', '#ffffff'];
+
+    const confettiCanvas = document.createElement('canvas');
+    confettiCanvas.setAttribute('aria-hidden', 'true');
+    Object.assign(confettiCanvas.style, {
+      position: 'fixed',
+      inset: '0',
+      width: '100vw',
+      height: '100vh',
+      pointerEvents: 'none',
+      zIndex: '600'
+    });
+    document.body.appendChild(confettiCanvas);
+
+    const dpr = window.devicePixelRatio || 1;
+    function sizeConfettiCanvas(){
+      confettiCanvas.width  = window.innerWidth * dpr;
+      confettiCanvas.height = window.innerHeight * dpr;
+    }
+    sizeConfettiCanvas();
+    const cctx = confettiCanvas.getContext('2d');
+    cctx.scale(dpr, dpr);
+
+    // burst originates from the element that triggered it (the scratch
+    // card), falls back to upper-center of the viewport
+    let originX = window.innerWidth / 2;
+    let originY = window.innerHeight * 0.35;
+    if (originEl){
+      const rect = originEl.getBoundingClientRect();
+      originX = rect.left + rect.width / 2;
+      originY = rect.top + rect.height / 2;
+    }
+
+    const PARTICLE_COUNT = 140;
+    const particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++){
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 4 + Math.random() * 9;
+      particles.push({
+        x: originX,
+        y: originY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 4, // slight upward bias so it "blasts" outward
+        size: 5 + Math.random() * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.3,
+        shape: Math.random() > 0.5 ? 'rect' : 'circle'
+      });
+    }
+
+    const GRAVITY = 0.22;
+    const DRAG = 0.985;
+    const DURATION = 2600;
+    let start = null;
+
+    function frame(ts){
+      if (!start) start = ts;
+      const elapsed = ts - start;
+      cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+      particles.forEach(p => {
+        p.vx *= DRAG;
+        p.vy = p.vy * DRAG + GRAVITY;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotationSpeed;
+        const life = Math.max(0, 1 - elapsed / DURATION);
+
+        cctx.save();
+        cctx.translate(p.x, p.y);
+        cctx.rotate(p.rotation);
+        cctx.globalAlpha = life;
+        cctx.fillStyle = p.color;
+        if (p.shape === 'rect'){
+          cctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.6);
+        } else {
+          cctx.beginPath();
+          cctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+          cctx.fill();
+        }
+        cctx.restore();
+      });
+
+      if (elapsed < DURATION){
+        requestAnimationFrame(frame);
+      } else {
+        confettiCanvas.remove();
+        window.removeEventListener('resize', sizeConfettiCanvas);
+      }
+    }
+
+    window.addEventListener('resize', sizeConfettiCanvas);
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------------------------------------------------------
      4. SCRATCH CARD
   --------------------------------------------------------- */
   const canvas = document.getElementById('scratchCanvas');
@@ -269,6 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
       canvas.classList.add('done');
       countdownWrap.classList.add('show');
       startCountdown();
+      launchConfetti(document.getElementById('scratchCard'));
     }
 
     function handleMove(e){
