@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
      reads as celebratory rather than generic rainbow confetti.
   --------------------------------------------------------- */
   function launchConfetti(originEl){
-    const colors = ['#c9a35a', '#e8cd94', '#d99cae', '#f7dde3', '#a85d70', '#ffffff'];
+    const colors = ['#c9a35a', '#e8cd94', '#d98fa0', '#6b1f2a', '#8a9a6f', '#ffffff'];
 
     const confettiCanvas = document.createElement('canvas');
     confettiCanvas.setAttribute('aria-hidden', 'true');
