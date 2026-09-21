@@ -20,6 +20,7 @@
   --ink:#55362f;
   --sage:#6e7c56;
   --sage-light:#aab68e;
+  --knock-red:#b3241c;
   --blush-pink-light:#f6e0da;
   --blush-pink:#d98fa0;
 
@@ -122,12 +123,17 @@ p{margin:0;}
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
+  justify-content:flex-start;
   text-align:center;
-  color:#fff;
-  padding:1.5rem;
+  color:var(--ink);
+  padding:calc(2rem + env(safe-area-inset-top, 0px)) 1.5rem 1.5rem;
   z-index:2;
-  background:linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.15) 40%, rgba(0,0,0,.5) 100%);
+  /* dark brown/red text needs a light halo behind it rather than the old
+     dark scrim (which was tuned for white text) — light wash up top where
+     the text now sits, fading out by mid-screen so the door photo itself
+     still reads normally further down */
+  background:linear-gradient(180deg, rgba(253,246,234,.65) 0%, rgba(253,246,234,.32) 32%, rgba(253,246,234,0) 58%);
+  text-shadow:0 1px 10px rgba(253,246,234,.9), 0 1px 2px rgba(0,0,0,.1);
   transition:opacity .5s ease;
 }
 #door-screen.knocked #door-overlay-content{opacity:0;pointer-events:none;}
@@ -142,7 +148,8 @@ p{margin:0;}
   font-size:2.4rem;
   font-weight:500;
   letter-spacing:.05rem;
-  text-shadow:0 2px 18px rgba(0,0,0,.5);
+  color:var(--knock-red);
+  text-shadow:0 2px 16px rgba(253,246,234,.95), 0 1px 3px rgba(0,0,0,.12);
   animation:pulseGlow 2.4s ease-in-out infinite;
 }
 @keyframes pulseGlow{
@@ -150,7 +157,7 @@ p{margin:0;}
   50%{opacity:.72;transform:scale(1.03);}
 }
 .knock-hint{
-  margin-top:1.4rem;
+  margin-top:1.1rem;
   display:flex;
   align-items:center;
   gap:.5rem;
