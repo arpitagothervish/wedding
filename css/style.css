@@ -66,18 +66,6 @@ p{margin:0;}
   display:block;
 }
 
-/* auspicious kalash — sits above the hero eyebrow as a small welcome motif */
-.kalash-icon-wrap{
-  display:flex;
-  justify-content:center;
-  margin-bottom:.7rem;
-}
-.kalash-icon-wrap svg{
-  width:32px;
-  height:auto;
-  filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));
-}
-
 /* =========================================================
    DOOR INTRO SCREEN
 ========================================================= */
@@ -790,8 +778,27 @@ p{margin:0;}
    FOOTER
 ========================================================= */
 .site-footer{
+  position:relative;
   text-align:center;
   padding:4rem 1.25rem 3rem;
+}
+/* bg.svg is fixed, so the footer always sits over the same crop of the
+   artwork — often its busiest, most detailed area — which was drowning
+   out the text on mobile. A soft frosted cream haze (fading out at the
+   edges, not a hard box) restores contrast without hiding the artwork. */
+.site-footer::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 90% 100% at center, rgba(253,246,234,.9) 0%, rgba(253,246,234,.74) 45%, rgba(253,246,234,.2) 78%, transparent 100%);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  z-index:0;
+  pointer-events:none;
+}
+.site-footer > *{
+  position:relative;
+  z-index:1;
 }
 .footer-names{
   font-family:var(--font-script);
