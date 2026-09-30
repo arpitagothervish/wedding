@@ -89,13 +89,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function finishReveal(){
-    // instant cut, no fade — door-open.mp4's last frame is designed to
-    // match couple-hero.jpg, so hiding the door immediately makes it look
-    // like the door opened straight into the site rather than crossfading
-    doorScreen.classList.add('door-exit');
-    doorScreen.style.display = 'none';
+    // crossfade: reveal the site underneath while the door fades away on
+    // top of it (both run the same .7s opacity transition, set in CSS),
+    // so it reads as one continuous dissolve instead of a hard cut —
+    // masks the resolution difference between door-open.mp4 and the
+    // sharper couple-hero.jpg behind it
     mainSite.classList.add('revealed');
+    doorScreen.classList.add('door-exit');
     document.body.style.overflow = 'auto';
+
+    // fully remove the door screen from layout only after its fade
+    // finishes, so it doesn't block the site while it's still visible
+    setTimeout(() => { doorScreen.style.display = 'none'; }, 750);
 
     // fallback in case the gesture-triggered start above never fired
     startBgMusic();

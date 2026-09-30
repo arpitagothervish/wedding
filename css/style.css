@@ -37,7 +37,16 @@ body{
   margin:0;
   font-family:var(--font-body);
   color:var(--ink);
-  background:var(--cream);
+  /* site-wide illustrated backdrop (palace/peacocks/florals) — fixed so it
+     stays put as a single backdrop while every section scrolls over it,
+     rather than repeating/tiling down the page. background-color is the
+     fallback shown while the (623KB) SVG loads, or if it fails. */
+  background-color:var(--cream);
+  background-image:url('../assets/images/bg.svg');
+  background-size:cover;
+  background-position:top center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
@@ -98,9 +107,11 @@ p{margin:0;}
   background:#1c120f;
   overflow:hidden;
   touch-action:manipulation;
-  /* no transition here on purpose — the door-open video's last frame is
-     designed to match couple-hero.jpg exactly, so we cut instantly
-     instead of crossfading, making the handoff invisible */
+  /* crossfades out over the same .7s as #main-site fades in (below), so the
+     handoff reads as one continuous dissolve rather than a hard cut — the
+     door-open video is lower-resolution than couple-hero.jpg, so a fade
+     hides that mismatch instead of exposing it the way an instant cut did */
+  transition:opacity .7s ease, visibility .7s ease;
 }
 #door-screen.door-exit{
   opacity:0;
@@ -181,7 +192,7 @@ p{margin:0;}
 #main-site{
   opacity:0;
   visibility:hidden;
-  /* no transition — see #door-screen above */
+  transition:opacity .7s ease, visibility .7s ease;
 }
 #main-site.revealed{
   opacity:1;
@@ -330,7 +341,10 @@ p{margin:0;}
   position:relative;
   z-index:3;
   text-align:center;
-  color:#fff;
+  /* warm ivory instead of stark white — reads as one cohesive, elegant
+     block with the gold heading below rather than two mismatched tones,
+     and sits more naturally against the softer, illustrated artwork */
+  color:var(--cream);
   padding:0 1.25rem 4.5rem;
   max-width:620px;
 }
@@ -342,10 +356,14 @@ p{margin:0;}
   margin-bottom:.6rem;
 }
 .hero-names{
+  /* was inheriting the global h1 rule's dark maroon, which sat almost
+     unreadable against the dark scrim at the bottom of the hero — gold
+     both fixes that contrast and matches the ampersand beside it */
+  color:var(--gold-light);
   font-size:3.1rem;
   font-weight:600;
   line-height:1.1;
-  text-shadow:0 6px 26px rgba(0,0,0,.35);
+  text-shadow:0 6px 26px rgba(36,18,16,.55);
 }
 .hero-names span{display:inline-block;}
 .hero-names .amp{
@@ -362,8 +380,11 @@ p{margin:0;}
   opacity:.95;
 }
 .hero-tagline{
-  font-size:.95rem;
-  opacity:.92;
+  font-family:var(--font-heading);
+  font-style:italic;
+  font-weight:400;
+  font-size:1.05rem;
+  opacity:.95;
   line-height:1.6;
 }
 .hero-section .ornament{color:var(--gold-light);}
@@ -398,7 +419,6 @@ p{margin:0;}
    SCRATCH CARD + COUNTDOWN
 ========================================================= */
 .scratch-section{
-  background:linear-gradient(180deg, var(--blush-light), var(--cream));
   text-align:center;
 }
 .scratch-card-wrap{
@@ -538,32 +558,8 @@ p{margin:0;}
 /* =========================================================
    SCHEDULE
 ========================================================= */
-/* faint rangoli/mandala watermark — same tile used behind dress code below.
-   ::before sits under the section's own content since .section already
-   establishes position:relative + this is z-index:0 with content pushed
-   to z-index:1 */
-.schedule-section,
-.dresscode-section{
-  position:relative;
-}
-.schedule-section::before,
-.dresscode-section::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMzAnIGhlaWdodD0nMTMwJyB2aWV3Qm94PScwIDAgMTMwIDEzMCc+CjxnIGZpbGw9J25vbmUnIHN0cm9rZT0nIzZiMWYyYScgc3Ryb2tlLXdpZHRoPScxJyBvcGFjaXR5PScwLjU1Jz4KPGNpcmNsZSBjeD0nNjUnIGN5PSc2NScgcj0nMycvPgo8Y2lyY2xlIGN4PSc2NScgY3k9JzY1JyByPScxNScvPgo8Y2lyY2xlIGN4PSc2NScgY3k9JzY1JyByPScyOCcvPgo8L2c+CjxnIGZpbGw9JyNjOWEzNWEnIG9wYWNpdHk9JzAuNic+CjxlbGxpcHNlIGN4PSc2NScgY3k9JzM3JyByeD0nNCcgcnk9JzknLz4KPGVsbGlwc2UgY3g9JzY1JyBjeT0nOTMnIHJ4PSc0JyByeT0nOScvPgo8ZWxsaXBzZSBjeD0nMzcnIGN5PSc2NScgcng9JzknIHJ5PSc0Jy8+CjxlbGxpcHNlIGN4PSc5MycgY3k9JzY1JyByeD0nOScgcnk9JzQnLz4KPGVsbGlwc2UgY3g9JzQ0LjgnIGN5PSc0NC44JyByeD0nNCcgcnk9JzknIHRyYW5zZm9ybT0ncm90YXRlKDQ1IDQ0LjggNDQuOCknLz4KPGVsbGlwc2UgY3g9Jzg1LjInIGN5PSc4NS4yJyByeD0nNCcgcnk9JzknIHRyYW5zZm9ybT0ncm90YXRlKDQ1IDg1LjIgODUuMiknLz4KPGVsbGlwc2UgY3g9JzQ0LjgnIGN5PSc4NS4yJyByeD0nNCcgcnk9JzknIHRyYW5zZm9ybT0ncm90YXRlKC00NSA0NC44IDg1LjIpJy8+CjxlbGxpcHNlIGN4PSc4NS4yJyBjeT0nNDQuOCcgcng9JzQnIHJ5PSc5JyB0cmFuc2Zvcm09J3JvdGF0ZSgtNDUgODUuMiA0NC44KScvPgo8L2c+Cjwvc3ZnPg==");
-  background-size:130px 130px;
-  background-repeat:repeat;
-  opacity:.5;
-  pointer-events:none;
-  z-index:0;
-}
-.schedule-section > *,
-.dresscode-section > *{
-  position:relative;
-  z-index:1;
-}
-.schedule-section{background:var(--cream);}
+/* the mandala/rangoli watermark that used to sit here has been removed —
+   bg.svg (set on body) now shows through behind these sections instead */
 .event-list{
   max-width:900px;
   margin:0 auto;
@@ -592,7 +588,7 @@ p{margin:0;}
 /* =========================================================
    DRESS CODE
 ========================================================= */
-.dresscode-section{background:linear-gradient(180deg, var(--cream), var(--blush-light));text-align:center;}
+.dresscode-section{text-align:center;}
 .dress-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -632,7 +628,7 @@ p{margin:0;}
 /* =========================================================
    LOCATION
 ========================================================= */
-.location-section{background:var(--cream);text-align:center;}
+.location-section{text-align:center;}
 .location-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -685,7 +681,6 @@ p{margin:0;}
 .site-footer{
   text-align:center;
   padding:4rem 1.25rem 3rem;
-  background:linear-gradient(180deg, var(--blush-light), var(--blush));
 }
 .footer-names{
   font-family:var(--font-script);
