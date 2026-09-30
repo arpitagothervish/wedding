@@ -16,26 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let doorOpened = false;
 
-  // The door videos now carry their own audio. door-closed.mp4 autoplays
-  // muted on load (required for autoplay to work at all), then gets
-  // unmuted on the visitor's very first tap/click anywhere on the page —
-  // that first gesture is what the browser needs before it'll allow sound,
-  // and it lands on the *first* tap of the door, before the second tap
-  // that actually opens it. door-open.mp4 plays unmuted from the start
-  // since openDoor() itself only ever runs inside a trusted click/tap
-  // gesture. Background music (bgMusic) stays silent until the door-open
-  // video ends — see finishReveal() below.
-  const firstInteractionEvents = ['pointerdown','touchstart','mousedown','click','keydown'];
-  function armDoorAudioUnlock(){
-    const handler = () => {
-      closedVideo.muted = false;
-      const p = closedVideo.play();
-      if (p) p.catch(() => {});
-      firstInteractionEvents.forEach(evt => document.removeEventListener(evt, handler));
-    };
-    firstInteractionEvents.forEach(evt => document.addEventListener(evt, handler, { passive:true }));
-  }
-  armDoorAudioUnlock();
+  // The door videos carry their own audio and play unmuted by default —
+  // no tap required first. Note: browsers only allow unmuted autoplay on
+  // page load if they already trust the site from earlier visits (e.g.
+  // desktop Chrome after repeated testing); a phone opening the link for
+  // the first time may still silently block sound until the first tap —
+  // that's a platform restriction, not something this code controls.
+  // door-open.mp4 plays unmuted from openDoor(), which always runs inside
+  // a trusted click/tap gesture, so it's on much firmer ground. Background
+  // music (bgMusic) stays silent until the door-open video ends — see
+  // finishReveal() below.
+  const closedPlay = closedVideo.play();
+  if (closedPlay) closedPlay.catch(() => {});
 
   let bgMusicStarted = false;
   function startBgMusic(){
