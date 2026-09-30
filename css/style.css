@@ -78,25 +78,6 @@ p{margin:0;}
   filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));
 }
 
-/* peacock feather pair — echoes the real peacocks in the reception/couple
-   photos, flanking the scratch-card as its own decorative row so it never
-   has to wrap inline with heading text on narrow screens */
-.feather-flourish{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:3rem;
-  margin:-.5rem 0 2rem;
-}
-.feather-flourish .feather{
-  width:20px;
-  height:auto;
-  opacity:.85;
-}
-.feather-flourish .feather-mirror{
-  transform:scaleX(-1);
-}
-
 /* =========================================================
    DOOR INTRO SCREEN
 ========================================================= */
@@ -420,18 +401,27 @@ p{margin:0;}
 ========================================================= */
 .scratch-section{
   text-align:center;
+  /* tighter than the default section padding so "Mark Your Calendar"
+     through the countdown fits in one mobile screen without scrolling */
+  padding-top:3rem;
+  padding-bottom:3rem;
+}
+.scratch-section .section-heading{
+  margin-bottom:1.1rem;
 }
 .scratch-card-wrap{
   display:flex;
   justify-content:center;
-  margin-bottom:3rem;
+  margin-bottom:1.5rem;
 }
 /* heart is drawn directly on the canvas (no image), so the card is just a
    square bounding box — the clip-path on .scratch-reveal below uses the
-   same normalized heart path as the canvas fill, so they align exactly */
+   same normalized heart path as the canvas fill, so they align exactly.
+   Sized smaller than before (was min(340px,88vw)) so the whole section,
+   heart included, fits a single mobile screen alongside the countdown. */
 .scratch-card{
   position:relative;
-  width:min(340px, 88vw);
+  width:min(280px, 72vw);
   aspect-ratio:1/1;
   filter:drop-shadow(0 18px 28px rgba(107,31,42,.25));
 }
@@ -446,16 +436,16 @@ p{margin:0;}
   justify-content:center;
   color:var(--maroon);
 }
-.reveal-label{font-size:.8rem;letter-spacing:.08rem;text-transform:uppercase;opacity:.85;}
+.reveal-label{font-size:.7rem;letter-spacing:.06rem;text-transform:uppercase;opacity:.85;}
 .reveal-date{
   font-family:var(--font-heading);
-  font-size:2.2rem;
+  font-size:1.8rem;
   font-weight:700;
-  margin-top:.3rem;
+  margin-top:.25rem;
 }
 .reveal-year{
   font-family:var(--font-script);
-  font-size:1.8rem;
+  font-size:1.5rem;
   color:var(--gold);
   margin-top:-.2rem;
 }
@@ -485,14 +475,14 @@ p{margin:0;}
   font-size:.85rem;
   letter-spacing:.1rem;
   color:var(--rose-dark);
-  margin-bottom:1rem;
+  margin-bottom:.7rem;
 }
 .countdown{
   display:flex;
   justify-content:center;
-  gap:1.1rem;
+  gap:.8rem;
   flex-wrap:wrap;
-  padding-top:1.4rem; /* room for the flames above each diya */
+  padding-top:1.2rem; /* room for the flames above each diya */
 }
 /* each unit is styled as a small brass diya (oil lamp): a warm gold dish
    holding the number, a flickering flame above it (::before) and a
