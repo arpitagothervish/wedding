@@ -64,8 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const playPromise = openVideo.play();
     if (playPromise) playPromise.catch(() => {});
 
-    // safety fallback in case 'ended' never fires (video missing, etc.)
-    const fallbackTimer = setTimeout(finishReveal, 6000);
+    // safety fallback in case 'ended' never fires (video missing, etc.).
+    // Sized off the actual clip length (+3s buffer) when the browser
+    // already knows it, otherwise a generous default that comfortably
+    // covers the current ~19.7s door-open.mp4 — update DEFAULT_FALLBACK_MS
+    // if a future door-open video runs longer than ~20s.
+    const DEFAULT_FALLBACK_MS = 23000;
+    const knownDuration = openVideo.duration;
+    const fallbackMs = (isFinite(knownDuration) && knownDuration > 0)
+      ? Math.max(knownDuration * 1000 + 3000, DEFAULT_FALLBACK_MS)
+      : DEFAULT_FALLBACK_MS;
+    const fallbackTimer = setTimeout(finishReveal, fallbackMs);
 
     openVideo.addEventListener('ended', () => {
       clearTimeout(fallbackTimer);
