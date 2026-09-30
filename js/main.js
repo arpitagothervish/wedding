@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
      7. DOT NAV — active state on scroll
   --------------------------------------------------------- */
   const dots = document.querySelectorAll('#dot-nav .dot');
-  const navSections = ['hero','scratch','schedule','dresscode','location']
+  const navSections = ['hero','scratch','schedule','itinerary','dresscode','location']
     .map(id => document.getElementById(id))
     .filter(Boolean);
 

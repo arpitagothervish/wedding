@@ -586,6 +586,145 @@ p{margin:0;}
 }
 
 /* =========================================================
+   ITINERARY TIMELINE
+   Deliberately no cards/boxes here — just a vertical gold line with
+   alternating branches over the bg.svg backdrop, so it reads as one
+   continuous ribbon running down the page rather than another section.
+========================================================= */
+.itinerary-section{
+  max-width:640px;
+  margin:0 auto;
+  padding-top:1rem;
+  padding-bottom:1rem;
+}
+.timeline-date{
+  text-align:center;
+  font-family:var(--font-heading);
+  font-weight:700;
+  font-size:1.7rem;
+  color:var(--maroon);
+  margin:3rem 0 0;
+}
+.timeline-date sup{
+  font-size:.9rem;
+  top:-.5em;
+}
+.timeline-ornament{
+  display:flex;
+  justify-content:center;
+  margin:.5rem 0 1.5rem;
+}
+.timeline-ornament .ornament-svg{
+  width:130px;
+  height:auto;
+}
+
+.timeline-track{
+  position:relative;
+  padding:.5rem 0 1rem;
+}
+/* the central vertical line — fades in/out at the very top/bottom of each
+   day's stretch rather than starting/stopping abruptly */
+.timeline-track::before{
+  content:'';
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:2px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg, transparent, var(--gold) 8%, var(--gold) 92%, transparent);
+}
+
+.timeline-item{
+  position:relative;
+  display:flex;
+  align-items:center;
+  min-height:6.2rem;
+}
+.timeline-item.left{justify-content:flex-start;}
+.timeline-item.right{justify-content:flex-end;}
+
+/* small gold bead marking where each branch meets the spine */
+.timeline-item::after{
+  content:'';
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 0 4px var(--cream), 0 0 10px rgba(107,31,42,.35);
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+
+/* the branch itself — a thin line reaching out from the spine */
+.timeline-branch{
+  position:absolute;
+  top:50%;
+  height:2px;
+  width:8%;
+  background:var(--gold);
+  transform:translateY(-50%);
+}
+.timeline-item.left .timeline-branch{right:50%;}
+.timeline-item.right .timeline-branch{left:50%;}
+
+/* a small sage leaf at the outer tip of the branch, next to the text —
+   the "fancy" touch that keeps it from reading as a plain diagram line */
+.timeline-leaf{
+  position:absolute;
+  top:50%;
+  width:11px;
+  height:11px;
+  background:var(--sage);
+  border-radius:0 65% 0 65%;
+  transform:translateY(-50%) rotate(45deg);
+  box-shadow:0 1px 2px rgba(107,31,42,.25);
+}
+.timeline-item.left .timeline-leaf{right:calc(50% + 8% - 5px);}
+.timeline-item.right .timeline-leaf{left:calc(50% + 8% - 5px);}
+
+.timeline-content{
+  width:42%;
+  line-height:1.3;
+}
+.timeline-item.left .timeline-content{text-align:right;padding-right:1.3rem;}
+.timeline-item.right .timeline-content{text-align:left;padding-left:1.3rem;}
+
+.t-event{
+  font-family:var(--font-heading);
+  font-weight:700;
+  font-size:1.15rem;
+  color:var(--wine);
+}
+.t-time{
+  font-size:.82rem;
+  font-weight:500;
+  color:var(--ink);
+  margin-top:.2rem;
+}
+.t-loc{
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.06rem;
+  color:var(--rose-dark);
+  margin-top:.15rem;
+}
+
+@media (max-width:480px){
+  .timeline-content{width:40%;font-size:.95rem;}
+  .t-event{font-size:1.02rem;}
+  .timeline-branch{width:9%;}
+  .timeline-item.left .timeline-leaf{right:calc(50% + 9% - 5px);}
+  .timeline-item.right .timeline-leaf{left:calc(50% + 9% - 5px);}
+  .timeline-item.left .timeline-content{padding-right:1rem;}
+  .timeline-item.right .timeline-content{padding-left:1rem;}
+}
+
+/* =========================================================
    DRESS CODE
 ========================================================= */
 .dresscode-section{text-align:center;}
