@@ -482,54 +482,36 @@ p{margin:0;}
   justify-content:center;
   gap:.8rem;
   flex-wrap:wrap;
-  padding-top:1.2rem; /* room for the flames above each diya */
+  padding-top:1.3rem; /* room for the flower blooming above each unit */
 }
-/* each unit is styled as a small brass diya (oil lamp): a warm gold dish
-   holding the number, a flickering flame above it (::before) and a
-   shallow saucer/base peeking out beneath (::after) */
+/* each unit is a soft rounded card with a small flower blossom sitting
+   just above it (the SVG <use href="#flowerBloom">, in the HTML) */
 .countdown-unit{
   position:relative;
   background:linear-gradient(180deg, #fffaf0, var(--gold-light) 130%);
   border:1px solid var(--gold);
-  border-radius:10px 10px 40% 40% / 10px 10px 55% 55%;
+  border-radius:14px;
   min-width:72px;
   padding:1.1rem .6rem .8rem;
   box-shadow:0 8px 20px rgba(107,31,42,.15), inset 0 -6px 10px rgba(169,130,63,.25);
   overflow:visible;
 }
-.countdown-unit::before{
-  content:'';
+.countdown-flower{
   position:absolute;
-  top:-13px;
+  top:-19px;
   left:50%;
-  width:9px;
-  height:15px;
+  width:26px;
+  height:26px;
   transform:translateX(-50%);
-  background:radial-gradient(circle at 50% 68%, #fff4c4 0%, #f6b642 42%, #d9601f 78%, transparent 100%);
-  border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
-  box-shadow:0 0 9px 2px rgba(246,182,66,.6);
-  animation:flameFlicker 1.7s ease-in-out infinite;
+  filter:drop-shadow(0 2px 3px rgba(107,31,42,.3));
+  animation:bloomSway 3.4s ease-in-out infinite;
 }
-.countdown-unit:nth-child(2)::before{animation-delay:.2s;}
-.countdown-unit:nth-child(3)::before{animation-delay:.5s;}
-.countdown-unit:nth-child(4)::before{animation-delay:.35s;}
-@keyframes flameFlicker{
-  0%,100%{transform:translateX(-50%) scale(1,1) rotate(-2deg);opacity:1;}
-  25%{transform:translateX(-50%) scale(.9,1.1) rotate(3deg);opacity:.9;}
-  50%{transform:translateX(-50%) scale(1.08,.92) rotate(-3deg);opacity:1;}
-  75%{transform:translateX(-50%) scale(.94,1.05) rotate(2deg);opacity:.94;}
-}
-.countdown-unit::after{
-  content:'';
-  position:absolute;
-  bottom:-7px;
-  left:50%;
-  transform:translateX(-50%);
-  width:62%;
-  height:9px;
-  background:linear-gradient(180deg, var(--gold), var(--gold-deep));
-  border-radius:0 0 50% 50% / 0 0 100% 100%;
-  box-shadow:0 3px 6px rgba(107,31,42,.28);
+.countdown-unit:nth-child(2) .countdown-flower{animation-delay:.3s;}
+.countdown-unit:nth-child(3) .countdown-flower{animation-delay:.6s;}
+.countdown-unit:nth-child(4) .countdown-flower{animation-delay:.9s;}
+@keyframes bloomSway{
+  0%,100%{transform:translateX(-50%) rotate(-4deg) scale(1);}
+  50%{transform:translateX(-50%) rotate(4deg) scale(1.05);}
 }
 .countdown-unit span{
   display:block;
