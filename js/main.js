@@ -118,6 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
     lastTap = now;
   });
 
+  // "Skip intro" — jumps straight to the main site without playing
+  // door-open.mp4, for anyone re-opening the link who's already seen it
+  const skipBtn = document.getElementById('skip-intro');
+  if (skipBtn){
+    skipBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (doorOpened) return;
+      doorOpened = true;
+      closedVideo.pause();
+      finishReveal();
+    });
+  }
+
   /* ---------------------------------------------------------
      2. MUSIC TOGGLE
   --------------------------------------------------------- */

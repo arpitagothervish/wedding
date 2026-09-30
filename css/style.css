@@ -155,6 +155,37 @@ p{margin:0;}
   50%{transform:translateY(-4px);}
 }
 
+/* appears a couple seconds in, for anyone re-opening the link who'd
+   rather not sit through the door animation again */
+#skip-intro{
+  position:absolute;
+  left:50%;
+  bottom:calc(1.75rem + env(safe-area-inset-bottom, 0px));
+  transform:translateX(-50%);
+  z-index:2;
+  background:none;
+  border:none;
+  font-family:var(--font-body);
+  font-size:.68rem;
+  letter-spacing:.14rem;
+  text-transform:uppercase;
+  color:var(--ink);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  text-shadow:0 1px 10px rgba(253,246,234,.9), 0 1px 2px rgba(0,0,0,.1);
+  padding:.5rem .9rem;
+  cursor:pointer;
+  opacity:0;
+  animation:skipFadeIn .6s ease 1.8s forwards;
+  transition:opacity .3s ease;
+}
+#skip-intro:active{opacity:.55;}
+#door-screen.knocked #skip-intro{opacity:0 !important;pointer-events:none;}
+@keyframes skipFadeIn{
+  from{opacity:0;}
+  to{opacity:.78;}
+}
+
 /* =========================================================
    MAIN SITE
 ========================================================= */
