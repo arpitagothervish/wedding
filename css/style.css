@@ -264,17 +264,13 @@ p{margin:0;}
      the crop has to line up exactly for the cut to look seamless.
      No color-tint gradient here either (there used to be one) — the
      video plays untinted, so a tint on the photo would show up as a
-     visible color shift right at the cut. hero-scrim below still
-     handles darkening near the bottom for text legibility. Cherry
-     blossoms are baked into this image now — no separate overlay. */
+     visible color shift right at the cut. The hero-scrim darkening
+     overlay was removed along with the hero text it used to protect —
+     the photo now shows at full color. Cherry blossoms are baked into
+     this image now — no separate overlay. */
   background-position:center center;
   background-color:var(--blush);
   background-image:url('../assets/images/couple-hero.jpeg');
-}
-.hero-scrim{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg, rgba(90,30,26,.05) 0%, rgba(90,30,26,.15) 55%, rgba(36,18,16,.78) 100%);
 }
 
 .hero-content{
