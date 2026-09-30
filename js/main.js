@@ -16,51 +16,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let doorOpened = false;
 
-  // Background music replaces the door videos' own audio entirely — both
-  // door-closed.mp4 and door-open.mp4 stay muted (see the `muted` attribute
-  // on each <video> in the HTML, and openDoor() below never unmutes them).
-  //
-  // The track should start as close to "the moment the page loads" as
-  // browsers allow. Autoplay-with-sound is blocked without a user gesture,
-  // so we: (1) try to play immediately on load — works in some browsers/
-  // contexts, and (2) if that's blocked, start it on the visitor's very
-  // first tap/click/key anywhere on the page — which fires on the *first*
-  // tap of the door, not the second tap that actually opens it.
+  // The door videos now carry their own audio. door-closed.mp4 autoplays
+  // muted on load (required for autoplay to work at all), then gets
+  // unmuted on the visitor's very first tap/click anywhere on the page —
+  // that first gesture is what the browser needs before it'll allow sound,
+  // and it lands on the *first* tap of the door, before the second tap
+  // that actually opens it. door-open.mp4 plays unmuted from the start
+  // since openDoor() itself only ever runs inside a trusted click/tap
+  // gesture. Background music (bgMusic) stays silent until the door-open
+  // video ends — see finishReveal() below.
+  const firstInteractionEvents = ['pointerdown','touchstart','mousedown','click','keydown'];
+  function armDoorAudioUnlock(){
+    const handler = () => {
+      closedVideo.muted = false;
+      const p = closedVideo.play();
+      if (p) p.catch(() => {});
+      firstInteractionEvents.forEach(evt => document.removeEventListener(evt, handler));
+    };
+    firstInteractionEvents.forEach(evt => document.addEventListener(evt, handler, { passive:true }));
+  }
+  armDoorAudioUnlock();
+
   let bgMusicStarted = false;
   function startBgMusic(){
     if (bgMusicStarted || !bgMusic) return;
     const p = bgMusic.play();
     if (p) {
       p.then(() => { bgMusicStarted = true; setMusicIcon(true); })
-       .catch(() => { /* still blocked — first-interaction listener below will retry */ });
+       .catch(() => { /* blocked — the music-toggle button can still start it manually */ });
     }
   }
-
   if (bgMusic) bgMusic.volume = 0.55;
-  startBgMusic();
-
-  const firstInteractionEvents = ['pointerdown','touchstart','mousedown','click','keydown'];
-  function armMusicUnlock(){
-    const handler = () => {
-      startBgMusic();
-      firstInteractionEvents.forEach(evt => document.removeEventListener(evt, handler));
-    };
-    firstInteractionEvents.forEach(evt => document.addEventListener(evt, handler, { passive:true }));
-  }
-  armMusicUnlock();
 
   function openDoor(){
     if (doorOpened) return;
     doorOpened = true;
 
     doorScreen.classList.add('knocked');
+    closedVideo.pause();
 
     // swap videos
     closedVideo.classList.remove('active');
     openVideo.classList.add('active');
     openVideo.currentTime = 0;
+    openVideo.muted = false;
 
-    // stays muted — background music (started earlier) carries the audio now
+    // this call itself is inside a trusted user gesture, so unmuted
+    // playback is allowed even on mobile
     const playPromise = openVideo.play();
     if (playPromise) playPromise.catch(() => {});
 
@@ -102,7 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // finishes, so it doesn't block the site while it's still visible
     setTimeout(() => { doorScreen.style.display = 'none'; }, 750);
 
-    // fallback in case the gesture-triggered start above never fired
+    // door-open.mp4's own audio just finished — hand off to the
+    // background music track now
     startBgMusic();
   }
 
