@@ -78,7 +78,7 @@ p{margin:0;}
   touch-action:manipulation;
   /* crossfades out over the same .7s as #main-site fades in (below), so the
      handoff reads as one continuous dissolve rather than a hard cut — the
-     door-open video is lower-resolution than couple-hero.jpg, so a fade
+     door-open video is lower-resolution than couple-hero.jpeg, so a fade
      hides that mismatch instead of exposing it the way an instant cut did */
   transition:opacity .7s ease, visibility .7s ease;
 }
@@ -260,50 +260,21 @@ p{margin:0;}
   inset:0;
   background-size:cover;
   /* center-center to match .door-video's default object-fit:cover crop —
-     couple-hero.jpg is a still of the door-open video's last frame, so
+     couple-hero.jpeg is a still of the door-open video's last frame, so
      the crop has to line up exactly for the cut to look seamless.
      No color-tint gradient here either (there used to be one) — the
      video plays untinted, so a tint on the photo would show up as a
      visible color shift right at the cut. hero-scrim below still
-     handles darkening near the bottom for text legibility. */
+     handles darkening near the bottom for text legibility. Cherry
+     blossoms are baked into this image now — no separate overlay. */
   background-position:center center;
   background-color:var(--blush);
-  background-image:url('../assets/images/couple-hero.jpg');
+  background-image:url('../assets/images/couple-hero.jpeg');
 }
 .hero-scrim{
   position:absolute;
   inset:0;
   background:linear-gradient(180deg, rgba(90,30,26,.05) 0%, rgba(90,30,26,.15) 55%, rgba(36,18,16,.78) 100%);
-}
-/* fixed to the viewport (not the hero) so it isn't clipped by
-   .parallax-wrap's overflow:hidden — this is what lets it lag behind
-   and stay on screen after the hero has scrolled away */
-#flower-field{
-  position:fixed;
-  inset:0;
-  z-index:50;
-  pointer-events:none;
-  will-change:transform, opacity;
-}
-.flower{
-  position:absolute;
-  filter:drop-shadow(0 8px 14px rgba(0,0,0,.3));
-}
-/* single cherry-blossom image, laid directly over the hero photo.
-   Sized for a phone screen (source image is a mobile crop) —
-   capped so it doesn't blur out on wider screens, not tuned for laptops. */
-.flower-rain{
-  top:0; left:0; right:0;
-  margin:0 auto;
-  width:100%;
-  max-width:480px;
-  opacity:.9;
-  animation:floatRain 12s ease-in-out infinite;
-}
-
-@keyframes floatRain{
-  0%,100%{transform:translate(0,0);}
-  50%{transform:translate(0,-14px);}
 }
 
 .hero-content{
@@ -434,7 +405,7 @@ p{margin:0;}
 .reveal-year{
   font-family:var(--font-script);
   font-size:1.5rem;
-  color:var(--gold);
+  color:var(--wine);
   margin-top:-.2rem;
 }
 #scratchCanvas{

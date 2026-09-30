@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // top of it (both run the same .7s opacity transition, set in CSS),
     // so it reads as one continuous dissolve instead of a hard cut —
     // masks the resolution difference between door-open.mp4 and the
-    // sharper couple-hero.jpg behind it
+    // sharper couple-hero.jpeg behind it
     mainSite.classList.add('revealed');
     doorScreen.classList.add('door-exit');
     document.body.style.overflow = 'auto';
@@ -149,49 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------------------------------------------------------
-     3. FLOWER FIELD — fixed to the viewport (not the hero), so it
-        isn't clipped when the hero scrolls away. Drifts at a fraction
-        of normal scroll speed so it lags behind and lingers on screen
-        after the hero background is gone, then fades out once the
-        visitor has scrolled well past it.
-  --------------------------------------------------------- */
-  const flowerField = document.getElementById('flower-field');
-
-  if (flowerField){
-    const FLOWER_SPEED  = 0.16;  // fraction of normal scroll speed — lower = lags further behind
-    const FADE_START_VH = 2.2;   // starts fading after this many viewport-heights of scroll — past the scratch section
-    const FADE_END_VH   = 3.0;   // fully faded by this many viewport-heights
-
-    let flowerTicking = false;
-
-    function updateFlowerField(){
-      const y  = window.scrollY;
-      const vh = window.innerHeight;
-
-      flowerField.style.transform = `translate3d(0, ${-y * FLOWER_SPEED}px, 0)`;
-
-      const fadeRange = (FADE_END_VH - FADE_START_VH) * vh;
-      const progress  = (y - FADE_START_VH * vh) / fadeRange;
-      const opacity   = 1 - Math.min(Math.max(progress, 0), 1);
-
-      flowerField.style.opacity    = opacity;
-      flowerField.style.visibility = opacity <= 0.01 ? 'hidden' : 'visible';
-
-      flowerTicking = false;
-    }
-
-    window.addEventListener('scroll', () => {
-      if (!flowerTicking){
-        requestAnimationFrame(updateFlowerField);
-        flowerTicking = true;
-      }
-    }, { passive:true });
-
-    updateFlowerField();
-  }
-
-  /* ---------------------------------------------------------
-     3.5 CONFETTI BURST — fires once the scratch card is fully
+     3. CONFETTI BURST — fires once the scratch card is fully
      revealed. Self-contained canvas particle burst (no external
      library/CDN dependency), using the site's own palette so it
      reads as celebratory rather than generic rainbow confetti.

@@ -71,13 +71,6 @@
     <a href="#location" class="dot" data-label="Location"></a>
   </nav>
 
-  <!-- Cherry blossoms: fixed to the viewport (not clipped to the hero) so
-       they can drift at a much slower rate than the page and stay on
-       screen well after the hero background has scrolled away. Faded out
-       by JS once the visitor has scrolled well past the hero. -->
-  <div id="flower-field" aria-hidden="true">
-    <img src="assets/images/flowers.png" alt="" class="flower flower-rain" onerror="this.style.display='none'">
-  </div>
 
   <!-- Reusable decorative motifs (marigold garland divider, peacock feather,
        kalash) — defined once as <symbol>s and instantiated with <use> so
@@ -154,7 +147,8 @@
   <section id="hero" class="section hero-section">
     <div class="parallax-wrap">
 
-      <!-- Background layer: couple photo. Drop your photo at assets/images/couple-hero.jpg -->
+      <!-- Background layer: couple photo (cherry blossoms are baked into
+           this image now, not a separate overlay) -->
       <div class="hero-bg"></div>
       <div class="hero-scrim"></div>
 
@@ -375,7 +369,7 @@
         <p>Indo-western or cocktail party wear</p>
         <div class="swatches">
           <span style="background:#1B2A4A"></span>
-          <span style="background:#F2B8C6"></span>
+          <span style="background:#1A1A1A"></span>
           <span style="background:#1F4E33"></span>
         </div>
       </div>
@@ -394,7 +388,7 @@
         <div class="swatches">
           <span style="background:#C9A35A"></span>
           <span style="background:#B3241C"></span>
-          <span style="background:#F4C6D7"></span>
+          <span style="background:#C2185B"></span>
         </div>
       </div>
     </div>
